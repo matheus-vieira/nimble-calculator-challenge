@@ -84,6 +84,6 @@ public class CalculatorService(
             return operation;
         }
 
-        throw new NotImplementedException($"Operation '{operationType}' not yet implemented");
+        throw new InvalidOperationException($"Operation '{operationType}' is not registered");
     }
 }
