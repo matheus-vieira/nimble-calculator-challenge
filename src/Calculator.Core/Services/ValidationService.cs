@@ -55,7 +55,8 @@ public class ValidationService(INumberParser numberParser, CalculatorOptions opt
 
             int value = token.Value;
 
-            if (value >= 0 && value > _options.UpperBound)
+            // Numbers > UpperBound are ignored (display as 0)
+            if (value > _options.UpperBound)
             {
                 displayNumbers.Add(0);
                 continue;

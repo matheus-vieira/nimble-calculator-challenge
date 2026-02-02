@@ -132,7 +132,7 @@ while (true)
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"Unexpected error: {ex.Message}\n");
+        Console.WriteLine($"Unexpected error: {ex.Message}. Please check your input format.\n");
     }
 }
 
