@@ -21,14 +21,12 @@ public class CalculatorService : ICalculator
 
     /// <summary>
     /// Adds numbers from the input string.
-    /// Step 1: Enforces maximum of 2 numbers (configurable).
-    /// Step 2+: Removes max constraint.
+    /// Step 2: Supports unlimited numbers (N numbers).
     /// Negative numbers throw an exception.
     /// Numbers > 1000 are treated as invalid (0).
     /// </summary>
     /// <param name="input">The input string containing numbers to sum.</param>
     /// <returns>The sum of valid numbers.</returns>
-    /// <exception cref="TooManyNumbersException">When more than 2 numbers are provided (Step 1).</exception>
     /// <exception cref="NegativeNumbersException">When negative numbers are encountered.</exception>
     public int Add(string input)
     {
@@ -40,13 +38,7 @@ public class CalculatorService : ICalculator
             throw new NegativeNumbersException(parsed.NegativeNumbers);
         }
 
-        // Step 1: Enforce maximum of 2 numbers
-        if (parsed.ValidNumbers.Count > 2)
-        {
-            throw new TooManyNumbersException(parsed.ValidNumbers.Count, maxAllowed: 2);
-        }
-
-        // Sum valid numbers
+        // Sum valid numbers (no max constraint - Step 2)
         return parsed.ValidNumbers.Sum();
     }
 }

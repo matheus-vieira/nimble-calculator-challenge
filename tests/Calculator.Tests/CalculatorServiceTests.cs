@@ -53,14 +53,6 @@ public class CalculatorServiceTests
     }
 
     [Fact]
-    public void Add_ThreeNumbers_ThrowsTooManyNumbersException()
-    {
-        // Act & Assert
-        var ex = Assert.Throws<TooManyNumbersException>(() => _calculator.Add("1,2,3"));
-        Assert.Contains("Expected at most 2 numbers, but got 3", ex.Message);
-    }
-
-    [Fact]
     public void Add_InvalidNumber_TreatsAsZero()
     {
         // Act
@@ -78,6 +70,30 @@ public class CalculatorServiceTests
 
         // Assert
         Assert.Equal(2, result);
+    }
+
+    #endregion
+
+    #region Step 2: Remove Max Constraint (Support N Numbers)
+
+    [Fact]
+    public void Add_ThreeNumbers_ReturnsSum()
+    {
+        // Act
+        int result = _calculator.Add("1,2,3");
+
+        // Assert
+        Assert.Equal(6, result);
+    }
+
+    [Fact]
+    public void Add_ManyNumbers_ReturnsSum()
+    {
+        // Act
+        int result = _calculator.Add("1,2,3,4,5,6,7,8,9,10");
+
+        // Assert
+        Assert.Equal(55, result);
     }
 
     #endregion
