@@ -168,6 +168,88 @@ public class CalculatorServiceTests
 
     #endregion
 
+    #region Step 6: Custom Single-Char Delimiter
+
+    [Fact]
+    public void Add_CustomSingleCharDelimiter_ReturnsSum()
+    {
+        // Act
+        int result = _calculator.Add("//;\n1;2;3");
+
+        // Assert
+        Assert.Equal(6, result);
+    }
+
+    [Fact]
+    public void Add_CustomPipeDelimiter_ReturnsSum()
+    {
+        // Act
+        int result = _calculator.Add("//|\n4|5|6");
+
+        // Assert
+        Assert.Equal(15, result);
+    }
+
+    #endregion
+
+    #region Step 7: Custom Any-Length Delimiter
+
+    [Fact]
+    public void Add_CustomMultiCharDelimiter_ReturnsSum()
+    {
+        // Act
+        int result = _calculator.Add("//[***]\n1***2***3");
+
+        // Assert
+        Assert.Equal(6, result);
+    }
+
+    [Fact]
+    public void Add_CustomWordDelimiter_ReturnsSum()
+    {
+        // Act
+        int result = _calculator.Add("//[and]\n10and20and30");
+
+        // Assert
+        Assert.Equal(60, result);
+    }
+
+    #endregion
+
+    #region Step 8: Multiple Delimiters
+
+    [Fact]
+    public void Add_MultipleCustomDelimiters_ReturnsSum()
+    {
+        // Act
+        int result = _calculator.Add("//[*][%]\n1*2%3");
+
+        // Assert
+        Assert.Equal(6, result);
+    }
+
+    [Fact]
+    public void Add_MultipleLongDelimiters_ReturnsSum()
+    {
+        // Act
+        int result = _calculator.Add("//[***][%%%]\n1***2%%%3");
+
+        // Assert
+        Assert.Equal(6, result);
+    }
+
+    [Fact]
+    public void Add_ThreeCustomDelimiters_ReturnsSum()
+    {
+        // Act
+        int result = _calculator.Add("//[*][%][#]\n1*2%3#4");
+
+        // Assert
+        Assert.Equal(10, result);
+    }
+
+    #endregion
+
     #region Parser Tests
 
     [Fact]
