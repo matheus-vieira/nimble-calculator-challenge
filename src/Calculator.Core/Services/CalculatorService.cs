@@ -61,4 +61,38 @@ public class CalculatorService(INumberParser numberParser) : ICalculator
 
         return (sum, formula);
     }
+
+    /// <summary>
+    /// Subtracts numbers from the first number in the input string.
+    /// Stretch Goal: Additional operations.
+    /// </summary>
+    /// <param name="input">The input string containing numbers.</param>
+    /// <returns>The result of subtraction (first - second - third - ...).</returns>
+    /// <exception cref="NegativeNumbersException">When negative numbers are encountered in the input.</exception>
+    public int Subtract(string input)
+    {
+        ArgumentNullException.ThrowIfNull(numberParser);
+        var parsed = numberParser.Parse(input);
+
+        // Check for negative numbers (throws exception with list)
+        if (parsed.NegativeNumbers.Count > 0)
+        {
+            throw new NegativeNumbersException(parsed.NegativeNumbers);
+        }
+
+        var numbers = parsed.ValidNumbers.Count > 0 
+            ? parsed.ValidNumbers 
+            : new List<int> { 0 };
+
+        if (numbers.Count == 0) return 0;
+        if (numbers.Count == 1) return numbers[0];
+
+        int result = numbers[0];
+        for (int i = 1; i < numbers.Count; i++)
+        {
+            result -= numbers[i];
+        }
+
+        return result;
+    }
 }

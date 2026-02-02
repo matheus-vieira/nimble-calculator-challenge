@@ -13,17 +13,25 @@ var calculator = serviceProvider.GetRequiredService<ICalculator>();
 
 Console.WriteLine("=== Nimble Calculator ===");
 Console.WriteLine("Enter numbers separated by commas or newlines.");
-Console.WriteLine("Type 'exit' to quit.");
-Console.WriteLine("Type 'formula' to toggle formula display.\n");
+Console.WriteLine("Commands:");
+Console.WriteLine("  add [input]  - Add numbers (default)");
+Console.WriteLine("  sub [input]  - Subtract numbers");
+Console.WriteLine("  formula      - Toggle formula display");
+Console.WriteLine("  exit         - Quit\n");
 
 bool showFormula = true; // Show formula by default
 
 while (true)
 {
-    Console.Write("Enter input: ");
+    Console.Write("Enter command: ");
     string? input = Console.ReadLine();
 
-    if (input == null || input.Equals("exit", StringComparison.OrdinalIgnoreCase))
+    if (string.IsNullOrWhiteSpace(input))
+    {
+        continue;
+    }
+
+    if (input.Equals("exit", StringComparison.OrdinalIgnoreCase))
     {
         Console.WriteLine("Goodbye!");
         break;
@@ -38,16 +46,42 @@ while (true)
 
     try
     {
-        if (showFormula)
+        string operation = "add";
+        string numbers = input;
+
+        // Parse operation and numbers
+        var parts = input.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length == 2)
         {
-            var (result, formula) = calculator.AddWithFormula(input);
-            Console.WriteLine($"Formula: {formula}");
-            Console.WriteLine($"Result: {result}\n");
+            var cmd = parts[0].ToLowerInvariant();
+            if (cmd is "add" or "sub")
+            {
+                operation = cmd;
+                numbers = parts[1];
+            }
         }
-        else
+
+        // Execute operation
+        switch (operation)
         {
-            int result = calculator.Add(input);
-            Console.WriteLine($"Result: {result}\n");
+            case "add":
+                if (showFormula)
+                {
+                    var (result, formula) = calculator.AddWithFormula(numbers);
+                    Console.WriteLine($"Formula: {formula}");
+                    Console.WriteLine($"Result: {result}\n");
+                }
+                else
+                {
+                    int result = calculator.Add(numbers);
+                    Console.WriteLine($"Result: {result}\n");
+                }
+                break;
+
+            case "sub":
+                int subResult = calculator.Subtract(numbers);
+                Console.WriteLine($"Result: {subResult}\n");
+                break;
         }
     }
     catch (TooManyNumbersException ex)

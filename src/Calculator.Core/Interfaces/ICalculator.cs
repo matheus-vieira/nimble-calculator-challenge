@@ -22,4 +22,12 @@ public interface ICalculator
     /// <exception cref="Core.Exceptions.TooManyNumbersException">When more than 2 numbers are provided (Step 1).</exception>
     /// <exception cref="Core.Exceptions.NegativeNumbersException">When negative numbers are encountered.</exception>
     (int result, string formula) AddWithFormula(string input);
+
+    /// <summary>
+    /// Subtracts numbers from the first number in the input string.
+    /// </summary>
+    /// <param name="input">The input string containing numbers.</param>
+    /// <returns>The result of subtraction (first - second - third - ...).</returns>
+    /// <exception cref="Core.Exceptions.NegativeNumbersException">When negative numbers are encountered in the input.</exception>
+    int Subtract(string input);
 }

@@ -298,6 +298,78 @@ public class CalculatorServiceTests
 
     #endregion
 
+    #region Stretch Goal: Subtract Operation
+
+    [Fact]
+    public void Subtract_EmptyString_ReturnsZero()
+    {
+        // Act
+        int result = _calculator.Subtract("");
+
+        // Assert
+        Assert.Equal(0, result);
+    }
+
+    [Fact]
+    public void Subtract_SingleNumber_ReturnsThatNumber()
+    {
+        // Act
+        int result = _calculator.Subtract("15");
+
+        // Assert
+        Assert.Equal(15, result);
+    }
+
+    [Fact]
+    public void Subtract_TwoNumbers_ReturnsResult()
+    {
+        // Act
+        int result = _calculator.Subtract("10,3");
+
+        // Assert
+        Assert.Equal(7, result);
+    }
+
+    [Fact]
+    public void Subtract_MultipleNumbers_ReturnsResult()
+    {
+        // Act
+        int result = _calculator.Subtract("20,5,3");
+
+        // Assert
+        Assert.Equal(12, result);
+    }
+
+    [Fact]
+    public void Subtract_WithInvalidNumbers_IgnoresThem()
+    {
+        // Act
+        int result = _calculator.Subtract("10,abc,3");
+
+        // Assert
+        Assert.Equal(7, result);
+    }
+
+    [Fact]
+    public void Subtract_ContainsNegativeNumber_ThrowsException()
+    {
+        // Act & Assert
+        var ex = Assert.Throws<NegativeNumbersException>(() => _calculator.Subtract("10,-3,5"));
+        Assert.Contains("-3", ex.Message);
+    }
+
+    [Fact]
+    public void Subtract_NumbersGreaterThan1000_IgnoresThem()
+    {
+        // Act
+        int result = _calculator.Subtract("100,1001,10");
+
+        // Assert
+        Assert.Equal(90, result); // 100 - 10 (1001 ignored)
+    }
+
+    #endregion
+
     #region Parser Tests
 
     [Fact]
