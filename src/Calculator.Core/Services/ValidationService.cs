@@ -13,6 +13,7 @@ using Calculator.Core.Models;
 /// <param name="options">The calculator options for validation rules.</param>
 public class ValidationService(INumberParser numberParser, CalculatorOptions options)
 {
+    private readonly INumberParser _numberParser = numberParser ?? throw new ArgumentNullException(nameof(numberParser));
     private readonly CalculatorOptions _options = options ?? new CalculatorOptions();
     /// <summary>
     /// Validates input and returns parsed valid numbers.
@@ -33,8 +34,7 @@ public class ValidationService(INumberParser numberParser, CalculatorOptions opt
     /// <exception cref="NegativeNumbersException">When negative numbers are encountered.</exception>
     public ValidationResult Validate(string input)
     {
-        ArgumentNullException.ThrowIfNull(numberParser);
-        var parsed = numberParser.Parse(input);
+        var parsed = _numberParser.Parse(input);
 
         // Check for negative numbers (throws exception with list)
         if (_options.DenyNegatives && parsed.NegativeNumbers.Count > 0)
