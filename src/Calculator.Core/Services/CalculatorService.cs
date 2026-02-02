@@ -6,19 +6,9 @@ using Calculator.Core.Interfaces;
 /// <summary>
 /// Provides calculator operations with input validation and parsing.
 /// </summary>
-public class CalculatorService : ICalculator
+/// <param name="numberParser">The number parser to use for input processing.</param>
+public class CalculatorService(INumberParser numberParser) : ICalculator
 {
-    private readonly INumberParser _numberParser;
-
-    /// <summary>
-    /// Initializes a new instance of the CalculatorService.
-    /// </summary>
-    /// <param name="numberParser">The number parser to use for input processing.</param>
-    public CalculatorService(INumberParser numberParser)
-    {
-        _numberParser = numberParser ?? throw new ArgumentNullException(nameof(numberParser));
-    }
-
     /// <summary>
     /// Adds numbers from the input string.
     /// Step 2: Supports unlimited numbers (N numbers).
@@ -30,7 +20,8 @@ public class CalculatorService : ICalculator
     /// <exception cref="NegativeNumbersException">When negative numbers are encountered.</exception>
     public int Add(string input)
     {
-        var parsed = _numberParser.Parse(input);
+        ArgumentNullException.ThrowIfNull(numberParser);
+        var parsed = numberParser.Parse(input);
 
         // Check for negative numbers (throws exception with list)
         if (parsed.NegativeNumbers.Count > 0)
