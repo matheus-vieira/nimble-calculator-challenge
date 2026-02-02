@@ -250,6 +250,54 @@ public class CalculatorServiceTests
 
     #endregion
 
+    #region Stretch Goal: Show Formula
+
+    [Fact]
+    public void AddWithFormula_EmptyString_ReturnsFormulaWithZero()
+    {
+        // Act
+        var (result, formula) = _calculator.AddWithFormula("");
+
+        // Assert
+        Assert.Equal(0, result);
+        Assert.Equal("0 = 0", formula);
+    }
+
+    [Fact]
+    public void AddWithFormula_TwoNumbers_ReturnsFormulaWithSum()
+    {
+        // Act
+        var (result, formula) = _calculator.AddWithFormula("2,4");
+
+        // Assert
+        Assert.Equal(6, result);
+        Assert.Equal("2+4 = 6", formula);
+    }
+
+    [Fact]
+    public void AddWithFormula_MixedValid_ReturnsFormulaWithSum()
+    {
+        // Act
+        var (result, formula) = _calculator.AddWithFormula("2,abc,4,1001,6");
+
+        // Assert
+        Assert.Equal(12, result);
+        Assert.Equal("2+4+6 = 12", formula);
+    }
+
+    [Fact]
+    public void AddWithFormula_ManyNumbers_ReturnsFormula()
+    {
+        // Act
+        var (result, formula) = _calculator.AddWithFormula("1,2,3,4,5");
+
+        // Assert
+        Assert.Equal(15, result);
+        Assert.Equal("1+2+3+4+5 = 15", formula);
+    }
+
+    #endregion
+
     #region Parser Tests
 
     [Fact]

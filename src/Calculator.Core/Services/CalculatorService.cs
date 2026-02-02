@@ -32,4 +32,33 @@ public class CalculatorService(INumberParser numberParser) : ICalculator
         // Sum valid numbers (no max constraint - Step 2)
         return parsed.ValidNumbers.Sum();
     }
+
+    /// <summary>
+    /// Adds numbers from the input string and returns both the result and the formula used.
+    /// Stretch Goal: Shows the formula (e.g., "2+0+4+0+0+6 = 12").
+    /// </summary>
+    /// <param name="input">The input string containing numbers to sum.</param>
+    /// <returns>A tuple containing the sum and the formula string.</returns>
+    /// <exception cref="NegativeNumbersException">When negative numbers are encountered.</exception>
+    public (int result, string formula) AddWithFormula(string input)
+    {
+        ArgumentNullException.ThrowIfNull(numberParser);
+        var parsed = numberParser.Parse(input);
+
+        // Check for negative numbers (throws exception with list)
+        if (parsed.NegativeNumbers.Count > 0)
+        {
+            throw new NegativeNumbersException(parsed.NegativeNumbers);
+        }
+
+        // Build formula and calculate sum
+        var numbers = parsed.ValidNumbers.Count > 0 
+            ? parsed.ValidNumbers 
+            : new List<int> { 0 };
+
+        int sum = numbers.Sum();
+        string formula = $"{string.Join("+", numbers)} = {sum}";
+
+        return (sum, formula);
+    }
 }

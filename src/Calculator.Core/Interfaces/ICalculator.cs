@@ -13,4 +13,13 @@ public interface ICalculator
     /// <exception cref="Core.Exceptions.TooManyNumbersException">When more than 2 numbers are provided (Step 1).</exception>
     /// <exception cref="Core.Exceptions.NegativeNumbersException">When negative numbers are encountered.</exception>
     int Add(string input);
+
+    /// <summary>
+    /// Adds numbers from the input string and returns both the result and the formula used.
+    /// </summary>
+    /// <param name="input">The input string containing numbers to sum.</param>
+    /// <returns>A tuple containing the sum and the formula string (e.g., "2+0+4+0+0+6 = 12").</returns>
+    /// <exception cref="Core.Exceptions.TooManyNumbersException">When more than 2 numbers are provided (Step 1).</exception>
+    /// <exception cref="Core.Exceptions.NegativeNumbersException">When negative numbers are encountered.</exception>
+    (int result, string formula) AddWithFormula(string input);
 }

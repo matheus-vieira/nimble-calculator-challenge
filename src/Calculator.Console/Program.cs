@@ -13,7 +13,10 @@ var calculator = serviceProvider.GetRequiredService<ICalculator>();
 
 Console.WriteLine("=== Nimble Calculator ===");
 Console.WriteLine("Enter numbers separated by commas or newlines.");
-Console.WriteLine("Type 'exit' to quit.\n");
+Console.WriteLine("Type 'exit' to quit.");
+Console.WriteLine("Type 'formula' to toggle formula display.\n");
+
+bool showFormula = true; // Show formula by default
 
 while (true)
 {
@@ -26,10 +29,26 @@ while (true)
         break;
     }
 
+    if (input.Equals("formula", StringComparison.OrdinalIgnoreCase))
+    {
+        showFormula = !showFormula;
+        Console.WriteLine($"Formula display: {(showFormula ? "ON" : "OFF")}\n");
+        continue;
+    }
+
     try
     {
-        int result = calculator.Add(input);
-        Console.WriteLine($"Result: {result}\n");
+        if (showFormula)
+        {
+            var (result, formula) = calculator.AddWithFormula(input);
+            Console.WriteLine($"Formula: {formula}");
+            Console.WriteLine($"Result: {result}\n");
+        }
+        else
+        {
+            int result = calculator.Add(input);
+            Console.WriteLine($"Result: {result}\n");
+        }
     }
     catch (TooManyNumbersException ex)
     {
