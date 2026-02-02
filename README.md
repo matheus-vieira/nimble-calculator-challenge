@@ -33,6 +33,11 @@ Console calculator built in C#/.NET with a strong focus on readability, testabil
 
 - `dotnet test`
 
+### Coverage
+
+- `dotnet test --collect:"XPlat Code Coverage"`
+- (Optional) Use ReportGenerator to create HTML reports.
+
 ## Console Usage
 
 Commands:
