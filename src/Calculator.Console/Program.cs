@@ -1,12 +1,24 @@
+using Calculator.Core;
+using Calculator.Core;
 using Calculator.Core.Exceptions;
 using Calculator.Core.Interfaces;
 using Calculator.Core.Services;
+using Calculator.Core.Services.Operations;
 using Microsoft.Extensions.DependencyInjection;
 
-// Set up dependency injection
+// Set up dependency injection with Named DI pattern
 var services = new ServiceCollection();
-services.AddScoped<INumberParser, NumberParser>();
-services.AddScoped<ICalculator>(sp => new CalculatorService(sp.GetRequiredService<INumberParser>()));
+
+// Core services (stateless -> singleton)
+services.AddSingleton<INumberParser, NumberParser>();
+services.AddSingleton<ValidationService>();
+
+// Operation implementations (keyed services)
+services.AddKeyedSingleton<ICalculatorOperation, AddOperation>(OperationType.Add);
+services.AddKeyedSingleton<ICalculatorOperation, SubtractOperation>(OperationType.Subtract);
+
+// Calculator service
+services.AddSingleton<ICalculator, CalculatorService>();
 
 var serviceProvider = services.BuildServiceProvider();
 var calculator = serviceProvider.GetRequiredService<ICalculator>();

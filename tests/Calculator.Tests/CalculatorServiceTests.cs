@@ -1,7 +1,10 @@
 using Xunit;
+using Calculator.Core;
 using Calculator.Core.Interfaces;
 using Calculator.Core.Services;
+using Calculator.Core.Services.Operations;
 using Calculator.Core.Exceptions;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Calculator.Tests;
 
@@ -16,8 +19,17 @@ public class CalculatorServiceTests
 
     public CalculatorServiceTests()
     {
-        _numberParser = new NumberParser();
-        _calculator = new CalculatorService(_numberParser);
+        // Setup DI container for testing
+        var services = new ServiceCollection();
+        services.AddSingleton<INumberParser, NumberParser>();
+        services.AddSingleton<ValidationService>();
+        services.AddKeyedSingleton<ICalculatorOperation, AddOperation>(OperationType.Add);
+        services.AddKeyedSingleton<ICalculatorOperation, SubtractOperation>(OperationType.Subtract);
+        services.AddSingleton<ICalculator, CalculatorService>();
+
+        var serviceProvider = services.BuildServiceProvider();
+        _numberParser = serviceProvider.GetRequiredService<INumberParser>();
+        _calculator = serviceProvider.GetRequiredService<ICalculator>();
     }
 
     #region Step 1: Basic Addition with Max 2 Numbers
@@ -366,6 +378,24 @@ public class CalculatorServiceTests
 
         // Assert
         Assert.Equal(90, result); // 100 - 10 (1001 ignored)
+    }
+
+    [Fact]
+    public void Subtract_WhenOperationNotRegistered_ThrowsNotImplementedException()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        services.AddSingleton<INumberParser, NumberParser>();
+        services.AddSingleton<ValidationService>();
+        services.AddKeyedSingleton<ICalculatorOperation, AddOperation>(OperationType.Add);
+        services.AddSingleton<ICalculator, CalculatorService>();
+
+        var serviceProvider = services.BuildServiceProvider();
+        var calculator = serviceProvider.GetRequiredService<ICalculator>();
+
+        // Act & Assert
+        var ex = Assert.Throws<NotImplementedException>(() => calculator.Subtract("10,3"));
+        Assert.Contains("Subtract", ex.Message);
     }
 
     #endregion

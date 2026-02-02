@@ -1,13 +1,19 @@
 namespace Calculator.Core.Services;
 
+using Calculator.Core;
 using Calculator.Core.Exceptions;
 using Calculator.Core.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 
 /// <summary>
-/// Provides calculator operations with input validation and parsing.
+/// Facade for calculator operations.
+/// Uses keyed services for clean dependency management.
 /// </summary>
-/// <param name="numberParser">The number parser to use for input processing.</param>
-public class CalculatorService(INumberParser numberParser) : ICalculator
+/// <param name="validationService">The validation service for input validation.</param>
+/// <param name="serviceProvider">The service provider used to resolve keyed operations.</param>
+public class CalculatorService(
+    ValidationService validationService,
+    IServiceProvider serviceProvider) : ICalculator
 {
     /// <summary>
     /// Adds numbers from the input string.
@@ -18,11 +24,7 @@ public class CalculatorService(INumberParser numberParser) : ICalculator
     /// <param name="input">The input string containing numbers to sum.</param>
     /// <returns>The sum of valid numbers.</returns>
     /// <exception cref="NegativeNumbersException">When negative numbers are encountered.</exception>
-    public int Add(string input)
-    {
-        var numbers = GetValidatedNumbers(input);
-        return numbers.Sum();
-    }
+    public int Add(string input) => ResolveOperation(OperationType.Add).Execute(input);
 
     /// <summary>
     /// Adds numbers from the input string and returns both the result and the formula used.
@@ -33,7 +35,7 @@ public class CalculatorService(INumberParser numberParser) : ICalculator
     /// <exception cref="NegativeNumbersException">When negative numbers are encountered.</exception>
     public (int result, string formula) AddWithFormula(string input)
     {
-        var numbers = GetValidatedNumbers(input);
+        var numbers = validationService.GetValidatedNumbers(input);
         
         // Build formula and calculate sum
         var displayNumbers = numbers.Count > 0 ? numbers : new List<int> { 0 };
@@ -50,40 +52,17 @@ public class CalculatorService(INumberParser numberParser) : ICalculator
     /// <param name="input">The input string containing numbers.</param>
     /// <returns>The result of subtraction (first - second - third - ...).</returns>
     /// <exception cref="NegativeNumbersException">When negative numbers are encountered in the input.</exception>
-    public int Subtract(string input)
+    public int Subtract(string input) => ResolveOperation(OperationType.Subtract).Execute(input);
+
+    private ICalculatorOperation ResolveOperation(OperationType operationType)
     {
-        var numbers = GetValidatedNumbers(input);
+        var operation = serviceProvider.GetKeyedService<ICalculatorOperation>(operationType);
 
-        if (numbers.Count == 0) return 0;
-        if (numbers.Count == 1) return numbers[0];
-
-        int result = numbers[0];
-        for (int i = 1; i < numbers.Count; i++)
+        if (operation is not null)
         {
-            result -= numbers[i];
+            return operation;
         }
 
-        return result;
-    }
-
-    /// <summary>
-    /// Validates input and returns parsed valid numbers.
-    /// DRY principle: Centralizes validation logic for all operations.
-    /// </summary>
-    /// <param name="input">The input string to parse and validate.</param>
-    /// <returns>List of valid numbers from the input.</returns>
-    /// <exception cref="NegativeNumbersException">When negative numbers are encountered.</exception>
-    private List<int> GetValidatedNumbers(string input)
-    {
-        ArgumentNullException.ThrowIfNull(numberParser);
-        var parsed = numberParser.Parse(input);
-
-        // Check for negative numbers (throws exception with list)
-        if (parsed.NegativeNumbers.Count > 0)
-        {
-            throw new NegativeNumbersException(parsed.NegativeNumbers);
-        }
-
-        return parsed.ValidNumbers;
+        throw new NotImplementedException($"Operation '{operationType}' not yet implemented");
     }
 }
