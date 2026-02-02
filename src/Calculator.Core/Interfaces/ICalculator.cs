@@ -30,4 +30,12 @@ public interface ICalculator
     /// <returns>The result of subtraction (first - second - third - ...).</returns>
     /// <exception cref="Core.Exceptions.NegativeNumbersException">When negative numbers are encountered in the input.</exception>
     int Subtract(string input);
+
+    /// <summary>
+    /// Multiplies numbers from the input string.
+    /// </summary>
+    /// <param name="input">The input string containing numbers.</param>
+    /// <returns>The result of multiplication (first * second * third * ...).</returns>
+    /// <exception cref="Core.Exceptions.NegativeNumbersException">When negative numbers are encountered in the input.</exception>
+    int Multiply(string input);
 }

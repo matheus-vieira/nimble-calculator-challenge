@@ -25,6 +25,7 @@ public class CalculatorServiceTests
         services.AddSingleton<ValidationService>();
         services.AddKeyedSingleton<ICalculatorOperation, AddOperation>(OperationType.Add);
         services.AddKeyedSingleton<ICalculatorOperation, SubtractOperation>(OperationType.Subtract);
+        services.AddKeyedSingleton<ICalculatorOperation, MultiplyOperation>(OperationType.Multiply);
         services.AddSingleton<ICalculator, CalculatorService>();
 
         var serviceProvider = services.BuildServiceProvider();
@@ -396,6 +397,58 @@ public class CalculatorServiceTests
         // Act & Assert
         var ex = Assert.Throws<NotImplementedException>(() => calculator.Subtract("10,3"));
         Assert.Contains("Subtract", ex.Message);
+    }
+
+    #endregion
+
+    #region Stretch Goal: Multiply Operation
+
+    [Fact]
+    public void Multiply_EmptyString_ReturnsZero()
+    {
+        // Act
+        int result = _calculator.Multiply("");
+
+        // Assert
+        Assert.Equal(0, result);
+    }
+
+    [Fact]
+    public void Multiply_TwoNumbers_ReturnsProduct()
+    {
+        // Act
+        int result = _calculator.Multiply("3,4");
+
+        // Assert
+        Assert.Equal(12, result);
+    }
+
+    [Fact]
+    public void Multiply_WithInvalidNumbers_IgnoresThem()
+    {
+        // Act
+        int result = _calculator.Multiply("2,abc,5");
+
+        // Assert
+        Assert.Equal(10, result);
+    }
+
+    [Fact]
+    public void Multiply_ContainsNegativeNumber_ThrowsException()
+    {
+        // Act & Assert
+        var ex = Assert.Throws<NegativeNumbersException>(() => _calculator.Multiply("2,-3,5"));
+        Assert.Contains("-3", ex.Message);
+    }
+
+    [Fact]
+    public void Multiply_NumbersGreaterThan1000_IgnoresThem()
+    {
+        // Act
+        int result = _calculator.Multiply("2,1001,5");
+
+        // Assert
+        Assert.Equal(10, result);
     }
 
     #endregion

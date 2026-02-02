@@ -16,6 +16,7 @@ services.AddSingleton<ValidationService>();
 // Operation implementations (keyed services)
 services.AddKeyedSingleton<ICalculatorOperation, AddOperation>(OperationType.Add);
 services.AddKeyedSingleton<ICalculatorOperation, SubtractOperation>(OperationType.Subtract);
+services.AddKeyedSingleton<ICalculatorOperation, MultiplyOperation>(OperationType.Multiply);
 
 // Calculator service
 services.AddSingleton<ICalculator, CalculatorService>();
@@ -28,6 +29,7 @@ Console.WriteLine("Enter numbers separated by commas or newlines.");
 Console.WriteLine("Commands:");
 Console.WriteLine("  add [input]  - Add numbers (default)");
 Console.WriteLine("  sub [input]  - Subtract numbers");
+Console.WriteLine("  mul [input]  - Multiply numbers");
 Console.WriteLine("  formula      - Toggle formula display");
 Console.WriteLine("  exit         - Quit\n");
 
@@ -66,7 +68,7 @@ while (true)
         if (parts.Length == 2)
         {
             var cmd = parts[0].ToLowerInvariant();
-            if (cmd is "add" or "sub")
+            if (cmd is "add" or "sub" or "mul")
             {
                 operation = cmd;
                 numbers = parts[1];
@@ -93,6 +95,11 @@ while (true)
             case "sub":
                 int subResult = calculator.Subtract(numbers);
                 Console.WriteLine($"Result: {subResult}\n");
+                break;
+
+            case "mul":
+                int mulResult = calculator.Multiply(numbers);
+                Console.WriteLine($"Result: {mulResult}\n");
                 break;
         }
     }

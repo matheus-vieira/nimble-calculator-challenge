@@ -54,6 +54,15 @@ public class CalculatorService(
     /// <exception cref="NegativeNumbersException">When negative numbers are encountered in the input.</exception>
     public int Subtract(string input) => ResolveOperation(OperationType.Subtract).Execute(input);
 
+    /// <summary>
+    /// Multiplies numbers from the input string.
+    /// Stretch Goal: Additional operations.
+    /// </summary>
+    /// <param name="input">The input string containing numbers.</param>
+    /// <returns>The result of multiplication (first * second * third * ...).</returns>
+    /// <exception cref="NegativeNumbersException">When negative numbers are encountered in the input.</exception>
+    public int Multiply(string input) => ResolveOperation(OperationType.Multiply).Execute(input);
+
     private ICalculatorOperation ResolveOperation(OperationType operationType)
     {
         var operation = serviceProvider.GetKeyedService<ICalculatorOperation>(operationType);
