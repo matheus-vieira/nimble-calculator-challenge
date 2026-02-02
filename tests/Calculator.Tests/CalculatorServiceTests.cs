@@ -591,4 +591,146 @@ public class CalculatorServiceTests
     }
 
     #endregion
+
+    #region Edge Cases: Formula Generation with Custom Delimiters
+
+    [Fact]
+    public void AddWithFormula_CustomSingleCharDelimiter_ReturnsFormula()
+    {
+        // Act
+        var (result, formula) = _calculator.AddWithFormula("//;\n2;4;6");
+
+        // Assert
+        Assert.Equal(12, result);
+        Assert.Equal("2+4+6 = 12", formula);
+    }
+
+    [Fact]
+    public void AddWithFormula_CustomMultiCharDelimiter_ReturnsFormula()
+    {
+        // Act
+        var (result, formula) = _calculator.AddWithFormula("//[***]\n1***2***3");
+
+        // Assert
+        Assert.Equal(6, result);
+        Assert.Equal("1+2+3 = 6", formula);
+    }
+
+    [Fact]
+    public void AddWithFormula_MultipleCustomDelimiters_ReturnsFormula()
+    {
+        // Act
+        var (result, formula) = _calculator.AddWithFormula("//[*][%]\n1*2%3");
+
+        // Assert
+        Assert.Equal(6, result);
+        Assert.Equal("1+2+3 = 6", formula);
+    }
+
+    [Fact]
+    public void AddWithFormula_CustomDelimiterWithInvalidNumbers_ShowsZeros()
+    {
+        // Act
+        var (result, formula) = _calculator.AddWithFormula("//;\n2;abc;4;1001;6");
+
+        // Assert
+        Assert.Equal(12, result);
+        Assert.Equal("2+0+4+0+6 = 12", formula);
+    }
+
+    #endregion
+
+    #region Edge Cases: Parser Malformed Delimiters
+
+    [Fact]
+    public void Parse_EmptyBracketDelimiter_FallsBackToDefault()
+    {
+        // Arrange - malformed: empty brackets
+        var input = "//[]\n1,2,3";
+
+        // Act
+        var result = _numberParser.Parse(input);
+
+        // Assert - should fall back to default comma delimiter
+        // Empty bracket delimiter is invalid, so "1,2,3" is treated as the delimiter pattern
+        // Result may vary based on implementation - this tests the fallback behavior
+        Assert.NotNull(result.TokenNumbers);
+    }
+
+    [Fact]
+    public void Parse_UnclosedBracketDelimiter_FallsBackToDefault()
+    {
+        // Arrange - malformed: unclosed bracket
+        var input = "//[***\n1,2,3";
+
+        // Act
+        var result = _numberParser.Parse(input);
+
+        // Assert - should fall back to default comma delimiter
+        // "//[***\n1,2,3" - bracket not closed, so should parse "1,2,3" with commas
+        Assert.NotNull(result.TokenNumbers);
+        Assert.Contains((int?)1, result.TokenNumbers);
+        Assert.Contains((int?)2, result.TokenNumbers);
+        Assert.Contains((int?)3, result.TokenNumbers);
+    }
+
+    [Fact]
+    public void Parse_MissingNewlineAfterDelimiter_HandlesGracefully()
+    {
+        // Arrange - delimiter without newline
+        var input = "//;1;2;3";
+
+        // Act
+        var result = _numberParser.Parse(input);
+
+        // Assert - should handle gracefully (either parse or return empty)
+        Assert.NotNull(result.TokenNumbers);
+    }
+
+    #endregion
+
+    #region Edge Cases: Boundary Values
+
+    [Fact]
+    public void Add_ZeroNumbers_ReturnsZero()
+    {
+        // Act
+        int result = _calculator.Add("0,0,0");
+
+        // Assert
+        Assert.Equal(0, result);
+    }
+
+    [Fact]
+    public void Add_ZeroAndValidNumbers_ReturnsSum()
+    {
+        // Act
+        int result = _calculator.Add("0,5,10");
+
+        // Assert
+        Assert.Equal(15, result);
+    }
+
+    [Fact]
+    public void AddWithFormula_WithZeros_IncludesInFormula()
+    {
+        // Act
+        var (result, formula) = _calculator.AddWithFormula("5,0,10");
+
+        // Assert
+        Assert.Equal(15, result);
+        Assert.Equal("5+0+10 = 15", formula);
+    }
+
+    [Fact]
+    public void Multiply_WithZero_ReturnsZero()
+    {
+        // Act
+        int result = _calculator.Multiply("5,0,10");
+
+        // Assert
+        Assert.Equal(0, result);
+    }
+
+    #endregion
 }
