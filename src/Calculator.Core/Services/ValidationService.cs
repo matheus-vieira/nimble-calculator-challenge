@@ -43,11 +43,13 @@ public class ValidationService(INumberParser numberParser, CalculatorOptions opt
         }
 
         var validNumbers = new List<int>();
+        var displayNumbers = new List<int>();
 
         foreach (var token in parsed.TokenNumbers)
         {
             if (!token.HasValue)
             {
+                displayNumbers.Add(0);
                 continue;
             }
 
@@ -55,17 +57,14 @@ public class ValidationService(INumberParser numberParser, CalculatorOptions opt
 
             if (value >= 0 && value > _options.UpperBound)
             {
+                displayNumbers.Add(0);
                 continue;
             }
 
-            if (_options.DenyNegatives && value < 0)
-            {
-                continue;
-            }
-
+            displayNumbers.Add(value);
             validNumbers.Add(value);
         }
 
-        return new ValidationResult(validNumbers, parsed.DisplayNumbers);
+        return new ValidationResult(validNumbers, displayNumbers);
     }
 }

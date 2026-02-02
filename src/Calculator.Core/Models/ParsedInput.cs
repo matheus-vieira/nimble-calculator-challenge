@@ -6,11 +6,6 @@ namespace Calculator.Core.Models;
 public class ParsedInput
 {
     /// <summary>
-    /// Gets the list of valid numbers extracted from the input.
-    /// </summary>
-    public List<int> ValidNumbers { get; set; } = new();
-
-    /// <summary>
     /// Gets the list of negative numbers found in the input.
     /// </summary>
     public List<int> NegativeNumbers { get; set; } = new();
@@ -24,9 +19,4 @@ public class ParsedInput
     /// Gets the list of parsed numbers in original order (null for invalid/missing tokens).
     /// </summary>
     public List<int?> TokenNumbers { get; set; } = new();
-
-    /// <summary>
-    /// Gets the list of numbers used for formula display (invalid/missing/over-limit as 0).
-    /// </summary>
-    public List<int> DisplayNumbers { get; set; } = new();
 }

@@ -152,7 +152,6 @@ public class NumberParser(CalculatorOptions options) : INumberParser
         {
             result.InvalidTokens.Add(token);
             result.TokenNumbers.Add(null);
-            result.DisplayNumbers.Add(0);
             return;
         }
 
@@ -163,24 +162,12 @@ public class NumberParser(CalculatorOptions options) : INumberParser
             if (number < 0)
             {
                 result.NegativeNumbers.Add(number);
-                result.DisplayNumbers.Add(number);
-                return;
             }
-            else if (number <= _options.UpperBound)
-            {
-                result.ValidNumbers.Add(number);
-                result.DisplayNumbers.Add(number);
-            }
-            else
-            {
-                result.DisplayNumbers.Add(0);
-            }
+
+            return;
         }
-        else
-        {
-            result.InvalidTokens.Add(token);
-            result.TokenNumbers.Add(null);
-            result.DisplayNumbers.Add(0);
-        }
+
+        result.InvalidTokens.Add(token);
+        result.TokenNumbers.Add(null);
     }
 }
