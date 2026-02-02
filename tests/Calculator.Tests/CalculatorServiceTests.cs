@@ -26,6 +26,7 @@ public class CalculatorServiceTests
         services.AddKeyedSingleton<ICalculatorOperation, AddOperation>(OperationType.Add);
         services.AddKeyedSingleton<ICalculatorOperation, SubtractOperation>(OperationType.Subtract);
         services.AddKeyedSingleton<ICalculatorOperation, MultiplyOperation>(OperationType.Multiply);
+        services.AddKeyedSingleton<ICalculatorOperation, DivideOperation>(OperationType.Divide);
         services.AddSingleton<ICalculator, CalculatorService>();
 
         var serviceProvider = services.BuildServiceProvider();
@@ -449,6 +450,65 @@ public class CalculatorServiceTests
 
         // Assert
         Assert.Equal(10, result);
+    }
+
+    #endregion
+
+    #region Stretch Goal: Divide Operation
+
+    [Fact]
+    public void Divide_EmptyString_ReturnsZero()
+    {
+        // Act
+        int result = _calculator.Divide("");
+
+        // Assert
+        Assert.Equal(0, result);
+    }
+
+    [Fact]
+    public void Divide_TwoNumbers_ReturnsQuotient()
+    {
+        // Act
+        int result = _calculator.Divide("8,2");
+
+        // Assert
+        Assert.Equal(4, result);
+    }
+
+    [Fact]
+    public void Divide_WithInvalidNumbers_IgnoresThem()
+    {
+        // Act
+        int result = _calculator.Divide("20,abc,5");
+
+        // Assert
+        Assert.Equal(4, result);
+    }
+
+    [Fact]
+    public void Divide_ContainsNegativeNumber_ThrowsException()
+    {
+        // Act & Assert
+        var ex = Assert.Throws<NegativeNumbersException>(() => _calculator.Divide("10,-2,5"));
+        Assert.Contains("-2", ex.Message);
+    }
+
+    [Fact]
+    public void Divide_NumbersGreaterThan1000_IgnoresThem()
+    {
+        // Act
+        int result = _calculator.Divide("100,1001,5");
+
+        // Assert
+        Assert.Equal(20, result);
+    }
+
+    [Fact]
+    public void Divide_ByZero_ThrowsException()
+    {
+        // Act & Assert
+        Assert.Throws<DivideByZeroException>(() => _calculator.Divide("10,0"));
     }
 
     #endregion

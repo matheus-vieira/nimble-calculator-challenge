@@ -63,6 +63,16 @@ public class CalculatorService(
     /// <exception cref="NegativeNumbersException">When negative numbers are encountered in the input.</exception>
     public int Multiply(string input) => ResolveOperation(OperationType.Multiply).Execute(input);
 
+    /// <summary>
+    /// Divides numbers from the input string.
+    /// Stretch Goal: Additional operations.
+    /// </summary>
+    /// <param name="input">The input string containing numbers.</param>
+    /// <returns>The result of division (first / second / third / ...).</returns>
+    /// <exception cref="DivideByZeroException">When any divisor is zero.</exception>
+    /// <exception cref="NegativeNumbersException">When negative numbers are encountered in the input.</exception>
+    public int Divide(string input) => ResolveOperation(OperationType.Divide).Execute(input);
+
     private ICalculatorOperation ResolveOperation(OperationType operationType)
     {
         var operation = serviceProvider.GetKeyedService<ICalculatorOperation>(operationType);

@@ -38,4 +38,13 @@ public interface ICalculator
     /// <returns>The result of multiplication (first * second * third * ...).</returns>
     /// <exception cref="Core.Exceptions.NegativeNumbersException">When negative numbers are encountered in the input.</exception>
     int Multiply(string input);
+
+    /// <summary>
+    /// Divides numbers from the input string.
+    /// </summary>
+    /// <param name="input">The input string containing numbers.</param>
+    /// <returns>The result of division (first / second / third / ...).</returns>
+    /// <exception cref="DivideByZeroException">When any divisor is zero.</exception>
+    /// <exception cref="Core.Exceptions.NegativeNumbersException">When negative numbers are encountered in the input.</exception>
+    int Divide(string input);
 }
