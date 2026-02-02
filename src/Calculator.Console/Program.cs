@@ -1,5 +1,4 @@
 using Calculator.Core;
-using Calculator.Core;
 using Calculator.Core.Exceptions;
 using Calculator.Core.Interfaces;
 using Calculator.Core.Services;
@@ -26,7 +25,7 @@ services.AddKeyedSingleton<ICalculatorOperation, DivideOperation>(OperationType.
 // Calculator service
 services.AddSingleton<ICalculator, CalculatorService>();
 
-var serviceProvider = services.BuildServiceProvider();
+using var serviceProvider = services.BuildServiceProvider();
 var calculator = serviceProvider.GetRequiredService<ICalculator>();
 
 Console.WriteLine("=== Nimble Calculator ===");
@@ -113,10 +112,6 @@ while (true)
                 Console.WriteLine($"Result: {divResult}\n");
                 break;
         }
-    }
-    catch (TooManyNumbersException ex)
-    {
-        Console.WriteLine($"Error: {ex.Message}\n");
     }
     catch (NegativeNumbersException ex)
     {
