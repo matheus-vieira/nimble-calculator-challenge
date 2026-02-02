@@ -1,4 +1,5 @@
 using Xunit;
+using Calculator.Core;
 using Calculator.Core.Services;
 using Calculator.Core.Services.Operations;
 using Calculator.Core.Exceptions;
@@ -15,8 +16,9 @@ public class DivideOperationTests
 
     public DivideOperationTests()
     {
-        var numberParser = new NumberParser();
-        var validationService = new ValidationService(numberParser);
+        var options = new CalculatorOptions();
+        var numberParser = new NumberParser(options);
+        var validationService = new ValidationService(numberParser, options);
         _divideOperation = new DivideOperation(validationService);
     }
 

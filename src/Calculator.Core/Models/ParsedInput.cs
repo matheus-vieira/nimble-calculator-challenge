@@ -19,4 +19,14 @@ public class ParsedInput
     /// Gets the list of invalid tokens from the input.
     /// </summary>
     public List<string> InvalidTokens { get; set; } = new();
+
+    /// <summary>
+    /// Gets the list of parsed numbers in original order (null for invalid/missing tokens).
+    /// </summary>
+    public List<int?> TokenNumbers { get; set; } = new();
+
+    /// <summary>
+    /// Gets the list of numbers used for formula display (invalid/missing/over-limit as 0).
+    /// </summary>
+    public List<int> DisplayNumbers { get; set; } = new();
 }

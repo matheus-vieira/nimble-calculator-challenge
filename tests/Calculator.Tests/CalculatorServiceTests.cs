@@ -21,6 +21,7 @@ public class CalculatorServiceTests
     {
         // Setup DI container for testing
         var services = new ServiceCollection();
+        services.AddSingleton(new CalculatorOptions());
         services.AddSingleton<INumberParser, NumberParser>();
         services.AddSingleton<ValidationService>();
         services.AddKeyedSingleton<ICalculatorOperation, AddOperation>(OperationType.Add);
@@ -296,7 +297,7 @@ public class CalculatorServiceTests
 
         // Assert
         Assert.Equal(12, result);
-        Assert.Equal("2+4+6 = 12", formula);
+        Assert.Equal("2+0+4+0+6 = 12", formula);
     }
 
     [Fact]
@@ -387,6 +388,7 @@ public class CalculatorServiceTests
     {
         // Arrange
         var services = new ServiceCollection();
+        services.AddSingleton(new CalculatorOptions());
         services.AddSingleton<INumberParser, NumberParser>();
         services.AddSingleton<ValidationService>();
         services.AddKeyedSingleton<ICalculatorOperation, AddOperation>(OperationType.Add);

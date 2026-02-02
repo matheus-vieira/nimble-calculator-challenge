@@ -35,12 +35,14 @@ public class CalculatorService(
     /// <exception cref="NegativeNumbersException">When negative numbers are encountered.</exception>
     public (int result, string formula) AddWithFormula(string input)
     {
-        var numbers = validationService.GetValidatedNumbers(input);
+        var validation = validationService.Validate(input);
+        var numbers = validation.ValidNumbers;
+        var displayNumbers = validation.DisplayNumbers;
         
         // Build formula and calculate sum
-        var displayNumbers = numbers.Count > 0 ? numbers : new List<int> { 0 };
+        var display = displayNumbers.Count > 0 ? displayNumbers : new List<int> { 0 };
         int sum = numbers.Sum();
-        string formula = $"{string.Join("+", displayNumbers)} = {sum}";
+        string formula = $"{string.Join("+", display)} = {sum}";
 
         return (sum, formula);
     }

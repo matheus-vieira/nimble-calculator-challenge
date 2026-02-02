@@ -1,4 +1,5 @@
 using Xunit;
+using Calculator.Core;
 using Calculator.Core.Services;
 using Calculator.Core.Exceptions;
 
@@ -14,8 +15,9 @@ public class ValidationServiceTests
 
     public ValidationServiceTests()
     {
-        var numberParser = new NumberParser();
-        _validationService = new ValidationService(numberParser);
+        var options = new CalculatorOptions();
+        var numberParser = new NumberParser(options);
+        _validationService = new ValidationService(numberParser, options);
     }
 
     [Fact]
@@ -75,5 +77,50 @@ public class ValidationServiceTests
 
         // Assert
         Assert.Equal(new[] { 1, 2 }, result);
+    }
+
+    [Fact]
+    public void GetValidatedNumbers_NegativesAllowed_ReturnsNegatives()
+    {
+        // Arrange
+        var options = new CalculatorOptions { DenyNegatives = false };
+        var numberParser = new NumberParser(options);
+        var validationService = new ValidationService(numberParser, options);
+
+        // Act
+        var result = validationService.GetValidatedNumbers("1,-2,3");
+
+        // Assert
+        Assert.Equal(new[] { 1, -2, 3 }, result);
+    }
+
+    [Fact]
+    public void GetValidatedNumbers_UpperBoundOverride_IgnoresAboveCustomBound()
+    {
+        // Arrange
+        var options = new CalculatorOptions { UpperBound = 10 };
+        var numberParser = new NumberParser(options);
+        var validationService = new ValidationService(numberParser, options);
+
+        // Act
+        var result = validationService.GetValidatedNumbers("5,11,10");
+
+        // Assert
+        Assert.Equal(new[] { 5, 10 }, result);
+    }
+
+    [Fact]
+    public void GetValidatedNumbers_AlternateDelimiter_ReturnsNumbers()
+    {
+        // Arrange
+        var options = new CalculatorOptions { AlternateDelimiter = ";" };
+        var numberParser = new NumberParser(options);
+        var validationService = new ValidationService(numberParser, options);
+
+        // Act
+        var result = validationService.GetValidatedNumbers("1;2;3");
+
+        // Assert
+        Assert.Equal(new[] { 1, 2, 3 }, result);
     }
 }
