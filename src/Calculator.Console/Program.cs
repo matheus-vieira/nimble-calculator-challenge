@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 // Parse command-line options
 var options = ParseOptions(args);
 
-// Set up dependency injection with Named DI pattern
+// Set up dependency injection
 var services = new ServiceCollection();
 
 // Core services (stateless -> singleton)
@@ -16,11 +16,24 @@ services.AddSingleton(options);
 services.AddSingleton<INumberParser, NumberParser>();
 services.AddSingleton<ValidationService>();
 
-// Operation implementations (keyed services)
-services.AddKeyedSingleton<ICalculatorOperation, AddOperation>(OperationType.Add);
-services.AddKeyedSingleton<ICalculatorOperation, SubtractOperation>(OperationType.Subtract);
-services.AddKeyedSingleton<ICalculatorOperation, MultiplyOperation>(OperationType.Multiply);
-services.AddKeyedSingleton<ICalculatorOperation, DivideOperation>(OperationType.Divide);
+// Operation implementations
+services.AddSingleton<AddOperation>();
+services.AddSingleton<SubtractOperation>();
+services.AddSingleton<MultiplyOperation>();
+services.AddSingleton<DivideOperation>();
+
+// Operation resolver with explicit dependencies
+services.AddSingleton<ICalculatorOperationResolver>(sp =>
+{
+    var operations = new Dictionary<OperationType, ICalculatorOperation>
+    {
+        [OperationType.Add] = sp.GetRequiredService<AddOperation>(),
+        [OperationType.Subtract] = sp.GetRequiredService<SubtractOperation>(),
+        [OperationType.Multiply] = sp.GetRequiredService<MultiplyOperation>(),
+        [OperationType.Divide] = sp.GetRequiredService<DivideOperation>()
+    };
+    return new CalculatorOperationResolver(operations);
+});
 
 // Calculator service
 services.AddSingleton<ICalculator, CalculatorService>();

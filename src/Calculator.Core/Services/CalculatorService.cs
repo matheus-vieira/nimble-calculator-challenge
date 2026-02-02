@@ -3,17 +3,16 @@ namespace Calculator.Core.Services;
 using Calculator.Core;
 using Calculator.Core.Exceptions;
 using Calculator.Core.Interfaces;
-using Microsoft.Extensions.DependencyInjection;
 
 /// <summary>
 /// Facade for calculator operations.
-/// Uses keyed services for clean dependency management.
+/// Uses explicit operation resolver for clean dependency management.
 /// </summary>
 /// <param name="validationService">The validation service for input validation.</param>
-/// <param name="serviceProvider">The service provider used to resolve keyed operations.</param>
+/// <param name="operationResolver">The resolver for calculator operations.</param>
 public class CalculatorService(
     ValidationService validationService,
-    IServiceProvider serviceProvider) : ICalculator
+    ICalculatorOperationResolver operationResolver) : ICalculator
 {
     /// <summary>
     /// Adds numbers from the input string.
@@ -76,14 +75,5 @@ public class CalculatorService(
     public int Divide(string input) => ResolveOperation(OperationType.Divide).Execute(input);
 
     private ICalculatorOperation ResolveOperation(OperationType operationType)
-    {
-        var operation = serviceProvider.GetKeyedService<ICalculatorOperation>(operationType);
-
-        if (operation is not null)
-        {
-            return operation;
-        }
-
-        throw new InvalidOperationException($"Operation '{operationType}' is not registered");
-    }
+        => operationResolver.Resolve(operationType);
 }

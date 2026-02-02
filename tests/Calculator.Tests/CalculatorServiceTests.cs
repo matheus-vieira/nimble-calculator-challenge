@@ -24,10 +24,21 @@ public class CalculatorServiceTests
         services.AddSingleton(new CalculatorOptions());
         services.AddSingleton<INumberParser, NumberParser>();
         services.AddSingleton<ValidationService>();
-        services.AddKeyedSingleton<ICalculatorOperation, AddOperation>(OperationType.Add);
-        services.AddKeyedSingleton<ICalculatorOperation, SubtractOperation>(OperationType.Subtract);
-        services.AddKeyedSingleton<ICalculatorOperation, MultiplyOperation>(OperationType.Multiply);
-        services.AddKeyedSingleton<ICalculatorOperation, DivideOperation>(OperationType.Divide);
+        services.AddSingleton<AddOperation>();
+        services.AddSingleton<SubtractOperation>();
+        services.AddSingleton<MultiplyOperation>();
+        services.AddSingleton<DivideOperation>();
+        services.AddSingleton<ICalculatorOperationResolver>(sp =>
+        {
+            var operations = new Dictionary<OperationType, ICalculatorOperation>
+            {
+                [OperationType.Add] = sp.GetRequiredService<AddOperation>(),
+                [OperationType.Subtract] = sp.GetRequiredService<SubtractOperation>(),
+                [OperationType.Multiply] = sp.GetRequiredService<MultiplyOperation>(),
+                [OperationType.Divide] = sp.GetRequiredService<DivideOperation>()
+            };
+            return new CalculatorOperationResolver(operations);
+        });
         services.AddSingleton<ICalculator, CalculatorService>();
 
         var serviceProvider = services.BuildServiceProvider();
@@ -391,7 +402,15 @@ public class CalculatorServiceTests
         services.AddSingleton(new CalculatorOptions());
         services.AddSingleton<INumberParser, NumberParser>();
         services.AddSingleton<ValidationService>();
-        services.AddKeyedSingleton<ICalculatorOperation, AddOperation>(OperationType.Add);
+        services.AddSingleton<AddOperation>();
+        services.AddSingleton<ICalculatorOperationResolver>(sp =>
+        {
+            var operations = new Dictionary<OperationType, ICalculatorOperation>
+            {
+                [OperationType.Add] = sp.GetRequiredService<AddOperation>()
+            };
+            return new CalculatorOperationResolver(operations);
+        });
         services.AddSingleton<ICalculator, CalculatorService>();
 
         var serviceProvider = services.BuildServiceProvider();
