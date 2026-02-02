@@ -20,17 +20,8 @@ public class CalculatorService(INumberParser numberParser) : ICalculator
     /// <exception cref="NegativeNumbersException">When negative numbers are encountered.</exception>
     public int Add(string input)
     {
-        ArgumentNullException.ThrowIfNull(numberParser);
-        var parsed = numberParser.Parse(input);
-
-        // Check for negative numbers (throws exception with list)
-        if (parsed.NegativeNumbers.Count > 0)
-        {
-            throw new NegativeNumbersException(parsed.NegativeNumbers);
-        }
-
-        // Sum valid numbers (no max constraint - Step 2)
-        return parsed.ValidNumbers.Sum();
+        var numbers = GetValidatedNumbers(input);
+        return numbers.Sum();
     }
 
     /// <summary>
@@ -42,22 +33,12 @@ public class CalculatorService(INumberParser numberParser) : ICalculator
     /// <exception cref="NegativeNumbersException">When negative numbers are encountered.</exception>
     public (int result, string formula) AddWithFormula(string input)
     {
-        ArgumentNullException.ThrowIfNull(numberParser);
-        var parsed = numberParser.Parse(input);
-
-        // Check for negative numbers (throws exception with list)
-        if (parsed.NegativeNumbers.Count > 0)
-        {
-            throw new NegativeNumbersException(parsed.NegativeNumbers);
-        }
-
+        var numbers = GetValidatedNumbers(input);
+        
         // Build formula and calculate sum
-        var numbers = parsed.ValidNumbers.Count > 0 
-            ? parsed.ValidNumbers 
-            : new List<int> { 0 };
-
+        var displayNumbers = numbers.Count > 0 ? numbers : new List<int> { 0 };
         int sum = numbers.Sum();
-        string formula = $"{string.Join("+", numbers)} = {sum}";
+        string formula = $"{string.Join("+", displayNumbers)} = {sum}";
 
         return (sum, formula);
     }
@@ -71,18 +52,7 @@ public class CalculatorService(INumberParser numberParser) : ICalculator
     /// <exception cref="NegativeNumbersException">When negative numbers are encountered in the input.</exception>
     public int Subtract(string input)
     {
-        ArgumentNullException.ThrowIfNull(numberParser);
-        var parsed = numberParser.Parse(input);
-
-        // Check for negative numbers (throws exception with list)
-        if (parsed.NegativeNumbers.Count > 0)
-        {
-            throw new NegativeNumbersException(parsed.NegativeNumbers);
-        }
-
-        var numbers = parsed.ValidNumbers.Count > 0 
-            ? parsed.ValidNumbers 
-            : new List<int> { 0 };
+        var numbers = GetValidatedNumbers(input);
 
         if (numbers.Count == 0) return 0;
         if (numbers.Count == 1) return numbers[0];
@@ -94,5 +64,26 @@ public class CalculatorService(INumberParser numberParser) : ICalculator
         }
 
         return result;
+    }
+
+    /// <summary>
+    /// Validates input and returns parsed valid numbers.
+    /// DRY principle: Centralizes validation logic for all operations.
+    /// </summary>
+    /// <param name="input">The input string to parse and validate.</param>
+    /// <returns>List of valid numbers from the input.</returns>
+    /// <exception cref="NegativeNumbersException">When negative numbers are encountered.</exception>
+    private List<int> GetValidatedNumbers(string input)
+    {
+        ArgumentNullException.ThrowIfNull(numberParser);
+        var parsed = numberParser.Parse(input);
+
+        // Check for negative numbers (throws exception with list)
+        if (parsed.NegativeNumbers.Count > 0)
+        {
+            throw new NegativeNumbersException(parsed.NegativeNumbers);
+        }
+
+        return parsed.ValidNumbers;
     }
 }
