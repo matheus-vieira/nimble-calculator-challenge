@@ -384,7 +384,7 @@ public class CalculatorServiceTests
     }
 
     [Fact]
-    public void Subtract_WhenOperationNotRegistered_ThrowsNotImplementedException()
+    public void Subtract_WhenOperationNotRegistered_ThrowsInvalidOperationException()
     {
         // Arrange
         var services = new ServiceCollection();
@@ -398,7 +398,7 @@ public class CalculatorServiceTests
         var calculator = serviceProvider.GetRequiredService<ICalculator>();
 
         // Act & Assert
-        var ex = Assert.Throws<NotImplementedException>(() => calculator.Subtract("10,3"));
+        var ex = Assert.Throws<InvalidOperationException>(() => calculator.Subtract("10,3"));
         Assert.Contains("Subtract", ex.Message);
     }
 

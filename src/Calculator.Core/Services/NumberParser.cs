@@ -1,9 +1,9 @@
 namespace Calculator.Core.Services;
 
 using Calculator.Core;
-using Calculator.Core.Exceptions;
 using Calculator.Core.Interfaces;
 using Calculator.Core.Models;
+using System.Text.RegularExpressions;
 
 /// <summary>
 /// Parses input strings to extract and validate numbers according to calculator rules.
@@ -11,6 +11,7 @@ using Calculator.Core.Models;
 public class NumberParser(CalculatorOptions options) : INumberParser
 {
     private readonly CalculatorOptions _options = options ?? new CalculatorOptions();
+    private static readonly Regex BracketDelimiterRegex = new(@"\[([^\]]+)\]", RegexOptions.Compiled | RegexOptions.CultureInvariant);
     /// <summary>
     /// Parses the input string according to calculator rules.
     /// Supports comma and newline delimiters for step 1-5.
@@ -65,10 +66,26 @@ public class NumberParser(CalculatorOptions options) : INumberParser
         var delimiterPart = input.Substring(2, newlineIndex - 2);
         var numbersPart = input.Substring(newlineIndex + 1);
 
-        var delimiters = ParseDelimiters(delimiterPart);
-        delimiters.AddRange(defaultDelimiters);
-        delimiters = delimiters.Distinct().ToList();
-        return (delimiters, numbersPart);
+        var customDelimiters = ParseDelimiters(delimiterPart);
+        var delimiters = new HashSet<string>(StringComparer.Ordinal);
+
+        foreach (var delimiter in defaultDelimiters)
+        {
+            if (!string.IsNullOrEmpty(delimiter))
+            {
+                delimiters.Add(delimiter);
+            }
+        }
+
+        foreach (var delimiter in customDelimiters)
+        {
+            if (!string.IsNullOrEmpty(delimiter))
+            {
+                delimiters.Add(delimiter);
+            }
+        }
+
+        return (delimiters.ToList(), numbersPart);
     }
 
     /// <summary>
@@ -83,36 +100,22 @@ public class NumberParser(CalculatorOptions options) : INumberParser
         if (delimiterPart.StartsWith("[") && delimiterPart.Contains("]"))
         {
             // Parse bracket-delimited delimiters: [d1][d2]...
-            int i = 0;
-            while (i < delimiterPart.Length)
+            foreach (Match match in BracketDelimiterRegex.Matches(delimiterPart))
             {
-                if (delimiterPart[i] == '[')
+                var value = match.Groups[1].Value;
+                if (!string.IsNullOrEmpty(value))
                 {
-                    int closeIndex = delimiterPart.IndexOf(']', i);
-                    if (closeIndex != -1)
-                    {
-                        string delimiter = delimiterPart.Substring(i + 1, closeIndex - i - 1);
-                        if (!string.IsNullOrEmpty(delimiter))
-                        {
-                            delimiters.Add(delimiter);
-                        }
-                        i = closeIndex + 1;
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-                else
-                {
-                    i++;
+                    delimiters.Add(value);
                 }
             }
         }
         else
         {
             // Single character delimiter
-            delimiters.Add(delimiterPart);
+            if (!string.IsNullOrEmpty(delimiterPart))
+            {
+                delimiters.Add(delimiterPart);
+            }
         }
 
         return delimiters.Count > 0 ? delimiters : new List<string> { "," };
@@ -128,22 +131,16 @@ public class NumberParser(CalculatorOptions options) : INumberParser
             return new List<string> { input };
         }
 
-        var tokens = new List<string> { input };
-
         // Sort delimiters by length (longest first) to handle overlapping patterns
         var sortedDelimiters = delimiters.OrderByDescending(d => d.Length).ToList();
+        var pattern = string.Join("|", sortedDelimiters.Select(Regex.Escape));
 
-        foreach (var delimiter in sortedDelimiters)
+        if (string.IsNullOrEmpty(pattern))
         {
-            var newTokens = new List<string>();
-            foreach (var token in tokens)
-            {
-                newTokens.AddRange(token.Split(new[] { delimiter }, StringSplitOptions.None));
-            }
-            tokens = newTokens;
+            return new List<string> { input };
         }
 
-        return tokens;
+        return Regex.Split(input, pattern, RegexOptions.CultureInvariant).ToList();
     }
 
     /// <summary>
