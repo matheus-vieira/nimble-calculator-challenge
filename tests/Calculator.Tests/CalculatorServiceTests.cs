@@ -30,7 +30,7 @@ public class CalculatorServiceTests
         services.AddSingleton<DivideOperation>();
         services.AddSingleton<ICalculatorOperationResolver>(sp =>
         {
-            var operations = new Dictionary<OperationType, ICalculatorOperation>
+            Dictionary<OperationType, ICalculatorOperation> operations = new()
             {
                 [OperationType.Add] = sp.GetRequiredService<AddOperation>(),
                 [OperationType.Subtract] = sp.GetRequiredService<SubtractOperation>(),
