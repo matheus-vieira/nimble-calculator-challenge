@@ -723,6 +723,36 @@ public class CalculatorServiceTests
     }
 
     [Fact]
+    public void Add_WhitespaceOnlyInput_ReturnsZero()
+    {
+        // Act
+        int result = _calculator.Add("   ");
+
+        // Assert
+        Assert.Equal(0, result);
+    }
+
+    [Fact]
+    public void Multiply_SingleNumber_ReturnsThatNumber()
+    {
+        // Act
+        int result = _calculator.Multiply("7");
+
+        // Assert
+        Assert.Equal(7, result);
+    }
+
+    [Fact]
+    public void Divide_WithRemainder_PerformsIntegerDivision()
+    {
+        // Act
+        int result = _calculator.Divide("10,3");
+
+        // Assert
+        Assert.Equal(3, result); // 10 / 3 = 3 (integer division)
+    }
+
+    [Fact]
     public void Multiply_WithZero_ReturnsZero()
     {
         // Act
