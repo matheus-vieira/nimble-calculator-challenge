@@ -16,13 +16,12 @@ public class DivideOperation(ValidationService validationService) : CalculatorOp
     protected override int ExecuteOperation(List<int> numbers)
     {
         int result = numbers[0];
-        for (int i = 1; i < numbers.Count; i++)
+        foreach (var number in numbers.Skip(1))
         {
-            if (numbers[i] == 0)
-            {
+            if (number == 0)
                 throw new DivideByZeroException();
-            }
-            result /= numbers[i];
+            
+            result /= number;
         }
         return result;
     }
