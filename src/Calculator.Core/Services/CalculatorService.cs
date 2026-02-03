@@ -39,7 +39,7 @@ public class CalculatorService(
         var displayNumbers = validation.DisplayNumbers;
         
         // Build formula and calculate sum
-        var display = displayNumbers.Count > 0 ? displayNumbers : new List<int> { 0 };
+        var display = displayNumbers.Count > 0 ? displayNumbers : [0];
         int sum = numbers.Sum();
         string formula = $"{string.Join("+", display)} = {sum}";
 

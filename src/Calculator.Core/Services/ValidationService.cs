@@ -42,8 +42,8 @@ public class ValidationService(INumberParser numberParser, CalculatorOptions opt
             throw new NegativeNumbersException(parsed.NegativeNumbers);
         }
 
-        var validNumbers = new List<int>();
-        var displayNumbers = new List<int>();
+        List<int> validNumbers = [];
+        List<int> displayNumbers = [];
 
         foreach (var token in parsed.TokenNumbers)
         {

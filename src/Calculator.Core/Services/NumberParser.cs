@@ -22,7 +22,7 @@ public class NumberParser(CalculatorOptions options) : INumberParser
     /// <returns>A ParsedInput containing valid numbers, negative numbers, and invalid tokens.</returns>
     public ParsedInput Parse(string input)
     {
-        var result = new ParsedInput();
+        ParsedInput result = new();
 
         if (string.IsNullOrWhiteSpace(input))
         {
@@ -52,7 +52,7 @@ public class NumberParser(CalculatorOptions options) : INumberParser
         var alternateDelimiter = string.IsNullOrEmpty(_options.AlternateDelimiter)
             ? "\n"
             : _options.AlternateDelimiter;
-        var defaultDelimiters = new List<string> { ",", alternateDelimiter };
+        List<string> defaultDelimiters = [",", alternateDelimiter];
 
         if (!input.StartsWith("//"))
         {
@@ -96,7 +96,7 @@ public class NumberParser(CalculatorOptions options) : INumberParser
     /// </summary>
     private List<string> ParseDelimiters(string delimiterPart)
     {
-        var delimiters = new List<string>();
+        List<string> delimiters = [];
 
         // Check if it contains bracket notation
         if (delimiterPart.StartsWith("[") && delimiterPart.Contains("]"))
@@ -120,7 +120,7 @@ public class NumberParser(CalculatorOptions options) : INumberParser
             }
         }
 
-        return delimiters.Count > 0 ? delimiters : new List<string> { "," };
+        return delimiters.Count > 0 ? delimiters : [","];
     }
 
     /// <summary>
@@ -130,7 +130,7 @@ public class NumberParser(CalculatorOptions options) : INumberParser
     {
         if (delimiters.Count == 0)
         {
-            return new List<string> { input };
+            return [input];
         }
 
         // Sort delimiters by length (longest first) to handle overlapping patterns
@@ -139,7 +139,7 @@ public class NumberParser(CalculatorOptions options) : INumberParser
 
         if (string.IsNullOrEmpty(pattern))
         {
-            return new List<string> { input };
+            return [input];
         }
 
         return Regex.Split(input, pattern, RegexOptions.CultureInvariant).ToList();
