@@ -25,7 +25,7 @@ services.AddSingleton<DivideOperation>();
 // Operation resolver with explicit dependencies
 services.AddSingleton<ICalculatorOperationResolver>(sp =>
 {
-    var operations = new Dictionary<OperationType, ICalculatorOperation>
+    Dictionary<OperationType, ICalculatorOperation> operations = new()
     {
         [OperationType.Add] = sp.GetRequiredService<AddOperation>(),
         [OperationType.Subtract] = sp.GetRequiredService<SubtractOperation>(),
