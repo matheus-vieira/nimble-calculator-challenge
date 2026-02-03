@@ -26,13 +26,8 @@ public class CalculatorOperationResolver : ICalculatorOperationResolver
     /// <param name="operationType">The type of operation to resolve.</param>
     /// <returns>The calculator operation implementation.</returns>
     /// <exception cref="InvalidOperationException">When the operation type is not registered.</exception>
-    public ICalculatorOperation Resolve(OperationType operationType)
-    {
-        if (_operations.TryGetValue(operationType, out var operation))
-        {
-            return operation;
-        }
-
-        throw new InvalidOperationException($"Operation '{operationType}' is not registered");
-    }
+    public ICalculatorOperation Resolve(OperationType operationType) =>
+        _operations.TryGetValue(operationType, out var operation)
+            ? operation
+            : throw new InvalidOperationException($"Operation '{operationType}' is not registered");
 }
