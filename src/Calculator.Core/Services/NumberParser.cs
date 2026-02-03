@@ -10,8 +10,10 @@ using System.Text.RegularExpressions;
 /// </summary>
 public class NumberParser(CalculatorOptions options) : INumberParser
 {
-    private readonly CalculatorOptions _options = options ?? new CalculatorOptions();
+    private const int MaxValidNumber = 1000;
     private static readonly Regex BracketDelimiterRegex = new(@"\[([^\]]+)\]", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+    private readonly CalculatorOptions _options = options ?? new CalculatorOptions();
+    
     /// <summary>
     /// Parses the input string according to calculator rules.
     /// Supports comma and newline delimiters for step 1-5.
@@ -155,19 +157,19 @@ public class NumberParser(CalculatorOptions options) : INumberParser
             return;
         }
 
-        if (int.TryParse(token, out int number))
+        if (!int.TryParse(token, out int number))
         {
-            result.TokenNumbers.Add(number);
-
-            if (number < 0)
-            {
-                result.NegativeNumbers.Add(number);
-            }
-
+            result.InvalidTokens.Add(token);
+            result.TokenNumbers.Add(null);
             return;
         }
 
-        result.InvalidTokens.Add(token);
-        result.TokenNumbers.Add(null);
+        // Use pattern matching to categorize numbers
+        result.TokenNumbers.Add(number);
+        
+        if (number < 0)
+        {
+            result.NegativeNumbers.Add(number);
+        }
     }
 }
