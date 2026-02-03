@@ -1,4 +1,4 @@
-namespace Calculator.Console;
+namespace Calculator.UI.Console;
 
 using Calculator.Core;
 

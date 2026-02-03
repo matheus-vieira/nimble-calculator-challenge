@@ -1,0 +1,38 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": ".NET Core Launch (console)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "${workspaceFolder}/src/Calculator.Console/bin/Debug/net9.0/Calculator.Console.dll",
+      "args": [],
+      "cwd": "${workspaceFolder}/src/Calculator.Console",
+      "console": "integratedTerminal",
+      "stopAtEntry": false,
+      "env": {
+        "DOTNET_CLI_UI_LANGUAGE": "en-US"
+      }
+    },
+    {
+      "name": ".NET Core Launch (console with args)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "${workspaceFolder}/src/Calculator.Console/bin/Debug/net9.0/Calculator.Console.dll",
+      "args": ["--alt-delim", "--allow-negatives", "--upper-bound", "1000"],
+      "cwd": "${workspaceFolder}/src/Calculator.Console",
+      "console": "integratedTerminal",
+      "stopAtEntry": false,
+      "env": {
+        "DOTNET_CLI_UI_LANGUAGE": "en-US"
+      }
+    },
+    {
+      "name": ".NET Core Attach",
+      "type": "coreclr",
+      "request": "attach"
+    }
+  ]
+}

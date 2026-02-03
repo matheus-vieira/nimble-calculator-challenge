@@ -3,6 +3,7 @@ using Calculator.Core.Exceptions;
 using Calculator.Core.Interfaces;
 using Calculator.Core.Services;
 using Calculator.Core.Services.Operations;
+using Calculator.UI.Console;
 using Microsoft.Extensions.DependencyInjection;
 
 // Parse command-line options

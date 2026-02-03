@@ -1,4 +1,4 @@
-namespace Calculator.Console;
+namespace Calculator.UI.Console;
 
 using Calculator.Core.Exceptions;
 using Calculator.Core.Interfaces;
@@ -24,8 +24,8 @@ internal class ConsoleUI
 
         while (true)
         {
-            Console.Write("Enter command: ");
-            string? input = Console.ReadLine();
+            System.Console.Write("Enter command: ");
+            string? input = System.Console.ReadLine();
 
             if (string.IsNullOrWhiteSpace(input))
             {
@@ -43,29 +43,29 @@ internal class ConsoleUI
 
     private void DisplayWelcome()
     {
-        Console.WriteLine("=== Nimble Calculator ===");
-        Console.WriteLine("Enter numbers separated by commas or newlines.");
-        Console.WriteLine("Commands:");
-        Console.WriteLine("  add [input]  - Add numbers (default)");
-        Console.WriteLine("  sub [input]  - Subtract numbers");
-        Console.WriteLine("  mul [input]  - Multiply numbers");
-        Console.WriteLine("  div [input]  - Divide numbers");
-        Console.WriteLine("  formula      - Toggle formula display");
-        Console.WriteLine("  exit         - Quit\n");
+        System.Console.WriteLine("=== Nimble Calculator ===");
+        System.Console.WriteLine("Enter numbers separated by commas or newlines.");
+        System.Console.WriteLine("Commands:");
+        System.Console.WriteLine("  add [input]  - Add numbers (default)");
+        System.Console.WriteLine("  sub [input]  - Subtract numbers");
+        System.Console.WriteLine("  mul [input]  - Multiply numbers");
+        System.Console.WriteLine("  div [input]  - Divide numbers");
+        System.Console.WriteLine("  formula      - Toggle formula display");
+        System.Console.WriteLine("  exit         - Quit\n");
     }
 
     private bool HandleSpecialCommands(string input)
     {
         if (input.Equals("exit", StringComparison.OrdinalIgnoreCase))
         {
-            Console.WriteLine("Goodbye!");
+            System.Console.WriteLine("Goodbye!");
             return true;
         }
 
         if (input.Equals("formula", StringComparison.OrdinalIgnoreCase))
         {
             _showFormula = !_showFormula;
-            Console.WriteLine($"Formula display: {(_showFormula ? "ON" : "OFF")}\n");
+            System.Console.WriteLine($"Formula display: {(_showFormula ? "ON" : "OFF")}\n");
             return false;
         }
 
@@ -96,11 +96,11 @@ internal class ConsoleUI
         }
         catch (NegativeNumbersException ex)
         {
-            Console.WriteLine($"Error: {ex.Message}\n");
+            System.Console.WriteLine($"Error: {ex.Message}\n");
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Unexpected error: {ex.Message}. Please check your input format.\n");
+            System.Console.WriteLine($"Unexpected error: {ex.Message}. Please check your input format.\n");
         }
     }
 
@@ -114,17 +114,17 @@ internal class ConsoleUI
 
             case "sub":
                 int subResult = _calculator.Subtract(numbers);
-                Console.WriteLine($"Result: {subResult}\n");
+                System.Console.WriteLine($"Result: {subResult}\n");
                 break;
 
             case "mul":
                 int mulResult = _calculator.Multiply(numbers);
-                Console.WriteLine($"Result: {mulResult}\n");
+                System.Console.WriteLine($"Result: {mulResult}\n");
                 break;
 
             case "div":
                 int divResult = _calculator.Divide(numbers);
-                Console.WriteLine($"Result: {divResult}\n");
+                System.Console.WriteLine($"Result: {divResult}\n");
                 break;
         }
     }
@@ -134,13 +134,13 @@ internal class ConsoleUI
         if (_showFormula)
         {
             var (result, formula) = _calculator.AddWithFormula(numbers);
-            Console.WriteLine($"Formula: {formula}");
-            Console.WriteLine($"Result: {result}\n");
+            System.Console.WriteLine($"Formula: {formula}");
+            System.Console.WriteLine($"Result: {result}\n");
         }
         else
         {
             int result = _calculator.Add(numbers);
-            Console.WriteLine($"Result: {result}\n");
+            System.Console.WriteLine($"Result: {result}\n");
         }
     }
 }
